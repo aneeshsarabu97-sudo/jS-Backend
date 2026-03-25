@@ -1,7 +1,7 @@
 //import('dotenv').config({path:'./env'})
 import dotenv from "dotenv"
 import connectDB from "./db/index1.js";
-
+import {app} from "./app.js"
 
 /* (async()=>{
     try {
@@ -21,5 +21,9 @@ import connectDB from "./db/index1.js";
 dotenv.config({
     path:'./env'
 })
-console.log("URI:", process.env.MONGODB_URL);
-connectDB()
+connectDB().
+then(()=>{
+    app.listen(process.env.PORT || 5000,()=>{
+        console.log(`Server is running at port:${process.env.PORT}`)
+    })
+})

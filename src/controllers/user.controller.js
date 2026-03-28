@@ -33,24 +33,28 @@ const registerUser=asyncHandler(async (req,res)=>{
         }
 
         //3.
-        const existedUser=User.findOne({
+        const existedUser=await User.findOne({
             $or:[{ username },{ email }]
         })
         if(existedUser){
             throw new ApiError(409,"User already exists with the same username and email");
         }    
-
+});
         //4.
-        const avatarLocalPath = req.files?.avatar?.[0]?.path
-        const coverimageLocalPath = req.files?.coverImage?.[0]?.path
+        const avatars = req.files?.avatar?.[0]?.path
+        const coverimages= req.files?.coverImage?.[0]?.path
 
-        if (!avatarLocalPath || !coverimageLocalPath) {
+        if (!avatars || !coverimages) {
             throw new ApiError(400,"Both avatar and coverImage are required");
         }
 
         //5.
-        const avataruploaded=await uploadOnCloudinary(avatarLocalPath)
-        const coverimageuploaded=await uploadOnCloudinary(coverimageLocalPath)
+        const avataruploaded = await uploadOnCloudinary(avatars)
+        const coverimageuploaded = await uploadOnCloudinary(coverimages)
+
+if (!avataruploaded || !coverimageuploaded) {
+    throw new ApiError(400,"Both field are requried");
+}
 
         if (!avataruploaded || !coverimageuploaded) {
             throw new ApiError(400,"Both field are requried");
@@ -59,9 +63,9 @@ const registerUser=asyncHandler(async (req,res)=>{
         //6.
         const userCreation =await User.create({
             fullname,
-            avatar:avatar.url,
+            avatar:avataruploaded.url,
             username:username.toLowerCase(),
-            coverimage:coverimage.url,
+            coverImage:coverimageuploaded.secure_url,
             email,
             password
         })
@@ -74,7 +78,7 @@ const registerUser=asyncHandler(async (req,res)=>{
         }
 
         return res.status(201).json(
-            new ApiResponse(200,userCreated,"User Registerd SucuessFully")
+            new ApiResponse(201,userCreated,"User Registerd SucuessFully")
         )
     })
 

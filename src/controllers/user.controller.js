@@ -39,7 +39,7 @@ const registerUser=asyncHandler(async (req,res)=>{
         if(existedUser){
             throw new ApiError(409,"User already exists with the same username and email");
         }    
-});
+
         //4.
         const avatars = req.files?.avatar?.[0]?.path
         const coverimages= req.files?.coverImage?.[0]?.path
@@ -80,8 +80,8 @@ if (!avataruploaded || !coverimageuploaded) {
         return res.status(201).json(
             new ApiResponse(201,userCreated,"User Registerd SucuessFully")
         )
-    })
-
+    }
+)
 
 
 export {registerUser}

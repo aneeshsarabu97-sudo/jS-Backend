@@ -1,4 +1,4 @@
-# YouTube Backend API
+# CreatorHub Backend API
 
 ## Overview
 
